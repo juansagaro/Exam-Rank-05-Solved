@@ -7,12 +7,11 @@ private:
     searchable_bag *m_bag;
 
 public:
-    // Forma Canónica Ortodoxa
     set(); 
     set(searchable_bag &b);
     set(const set &other);
     set &operator=(const set &other);
-    ~set();
+    virtual ~set();
 
     void insert(int item);
     void insert(int *items, int count);

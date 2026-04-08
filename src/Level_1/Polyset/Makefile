@@ -1,27 +1,35 @@
 NAME        = polyset
 CXX         = c++
-CXXFLAGS = -Wall -Wextra -Werror -std=c++98
+CXXFLAGS    = -Wall -Wextra -Werror -std=c++11
 
+INC_DIR     = inc
+GIVEN_DIR   = given
+MAIN_DIR    = main
 SRC_DIR     = src
 OBJ_DIR     = obj
 
-SRC_FILES   =	main.cpp \
-				BitcoinExchange.cpp
+INCLUDES    = -I$(INC_DIR) -I$(GIVEN_DIR)
 
-SRC         = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
+SRC         = \
+	$(MAIN_DIR)/main.cpp \
+	$(SRC_DIR)/searchable_array_bag.cpp \
+	$(SRC_DIR)/searchable_tree_bag.cpp \
+	$(SRC_DIR)/set.cpp \
+	$(GIVEN_DIR)/array_bag.cpp \
+	$(GIVEN_DIR)/tree_bag.cpp
 
-OBJ         = $(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
+OBJ         = $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(SRC))
 
 all: $(NAME)
 
 $(NAME): $(OBJ)
 	@echo "Compiling $(NAME)"
-	@$(CXX) $(CXXFLAGS) $(OBJ) -o $@
+	@$(CXX) $(CXXFLAGS) $(INCLUDES) $(OBJ) -o $@
 	@echo "Done!"
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
-	@mkdir -p $(OBJ_DIR)
-	@$(CXX) $(CXXFLAGS) -c $< -o $@
+$(OBJ_DIR)/%.o: %.cpp
+	@mkdir -p $(dir $@)
+	@$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
 	@echo "Cleaning objects"

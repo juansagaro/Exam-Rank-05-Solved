@@ -1,7 +1,8 @@
 #include "set.hpp"
 #include <iostream>
+#include <cstddef>
 
-set::set() : m_bag(nullptr) {}
+set::set() : m_bag(NULL) {}
 
 set::set(searchable_bag &b) : m_bag(&b) {}
 
@@ -17,7 +18,7 @@ set &set::operator=(const set &other) {
 set::~set() {}
 
 void set::insert(int item) {
-    if (m_bag != nullptr && !m_bag->has(item)) {
+    if (m_bag && !m_bag->has(item)) {
         m_bag->insert(item);
     }
 }
@@ -29,15 +30,15 @@ void set::insert(int *items, int count) {
 }
 
 void set::print() const {
-    if (m_bag != nullptr) m_bag->print();
+    if (m_bag) m_bag->print();
 }
 
 void set::clear() {
-    if (m_bag != nullptr) m_bag->clear();
+    if (m_bag) m_bag->clear();
 }
 
 bool set::has(int item) const {
-    if (m_bag != nullptr) return m_bag->has(item);
+    if (m_bag) return m_bag->has(item);
     return false;
 }
 
