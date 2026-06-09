@@ -1,41 +1,41 @@
 #include "../inc/bsq.h"
 
-void process_fd(int fd)
+void process_stream(FILE *stream)
 {
-    char    *raw;
-    t_map   map;
+    t_map map;
 
-    raw = read_file(fd);
-    if (!raw || !parse_map(raw, &map))
-        ft_putstr_fd("map error\n", 2);
+    map.grid = NULL; 
+    if (!parse_map(stream, &map))
+        fputs("map error\n", stderr);
     else
-        solve_and_print(&map);
-    if (raw)
-        free(raw);
+    {
+        solve_map(&map);
+        print_map(&map);
+    }
+    free_map(&map);
 }
 
 int main(int argc, char **argv)
 {
-    int i;
-    int fd;
+    int    i = 1;
+    FILE   *file;
 
-    i = 1;
     if (argc == 1)
-        process_fd(0);
+        process_stream(stdin);
     else
     {
         while (i < argc)
         {
-            fd = open(argv[i], O_RDONLY);
-            if (fd < 0)
-                ft_putstr_fd("map error\n", 2);
+            file = fopen(argv[i], "r");
+            if (!file)
+                fputs("map error\n", stderr);
             else
             {
-                process_fd(fd);
-                close(fd);
+                process_stream(file);
+                fclose(file);
             }
             if (i < argc - 1)
-                write(1, "\n", 1);
+                fputs("\n", stdout);
             i++;
         }
     }

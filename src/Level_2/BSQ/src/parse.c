@@ -1,72 +1,45 @@
 #include "../inc/bsq.h"
 
-char *read_file(int fd)
+void free_map(t_map *map)
 {
-    char    buf[4096];
-    char    *res;
-    char    *tmp;
-    int     ret;
-    int     len;
-    int     i;
-    int     j;
-
-    len = 0;
-    res = malloc(1);
-    if (!res) return (NULL);
-    res[0] = '\0';
-    while ((ret = read(fd, buf, 4096)) > 0)
-    {
-        tmp = malloc(len + ret + 1);
-        if (!tmp) { free(res); return (NULL); }
-        for (i = 0; i < len; i++) tmp[i] = res[i];
-        for (j = 0; j < ret; j++) tmp[i++] = buf[j];
-        tmp[i] = '\0';
-        free(res);
-        res = tmp;
-        len += ret;
-    }
-    if (ret < 0 || len == 0) { free(res); return (NULL); }
-    return (res);
+    if (!map->grid) return;
+    for (int i = 0; i < map->rows; i++)
+        free(map->grid[i]);
+    free(map->grid);
+    map->grid = NULL;
 }
 
-int parse_map(char *raw, t_map *map)
+int parse_map(FILE *stream, t_map *map)
 {
-    int i = 0, j = 0, first_len = 0, current_rows = 0;
+    char    *line = NULL;
+    size_t  len = 0;
+    ssize_t r_len;
+    int     i = 0;
 
-    while (raw[first_len] && raw[first_len] != '\n') first_len++;
-    if (first_len < 4) return (0);
-
-    map->full = raw[first_len - 1];
-    map->obs = raw[first_len - 2];
-    map->empty = raw[first_len - 3];
-    if (map->full == map->obs || map->full == map->empty || map->obs == map->empty)
+    if (fscanf(stream, "%d %c %c %c\n", &map->rows, &map->empty, &map->obs, &map->full) != 4)
+        return (0);
+    if (map->rows <= 0 || map->empty == map->obs || map->empty == map->full || map->obs == map->full)
         return (0);
 
-    map->rows = 0;
-    while (i < first_len - 3) {
-        if (raw[i] < '0' || raw[i] > '9') return (0);
-        map->rows = map->rows * 10 + (raw[i] - '0');
-        i++;
+    if (!(map->grid = calloc(map->rows, sizeof(char *)))) return (0);
+
+    while (i < map->rows)
+    {
+        if ((r_len = getline(&line, &len, stream)) <= 0) return (0);
+        if (line[r_len - 1] == '\n') line[--r_len] = '\0';
+
+        if (i == 0) map->cols = r_len;
+        if (r_len != map->cols || map->cols == 0) { free(line); return (0); }
+
+        for (int j = 0; j < map->cols; j++)
+            if (line[j] != map->empty && line[j] != map->obs) return (0);
+
+        map->grid[i++] = line;
+        line = NULL;
+        len = 0;
     }
 
-    map->data = raw + first_len + 1;
-    if (!*(map->data)) return (0);
-
-    map->cols = 0;
-    while (map->data[map->cols] && map->data[map->cols] != '\n') map->cols++;
-    if (map->cols == 0) return (0);
-
-    i = 0;
-    while (map->data[i]) {
-        if (map->data[i] == '\n') {
-            if (j != map->cols) return (0);
-            current_rows++;
-            j = 0;
-        } else {
-            if (map->data[i] != map->empty && map->data[i] != map->obs) return (0);
-            j++;
-        }
-        i++;
-    }
-    return (current_rows == map->rows && j == 0);
+    if (getline(&line, &len, stream) > 0) { free(line); return (0); }
+    free(line);
+    return (1);
 }

@@ -8,7 +8,7 @@ OBJ_DIR     = obj
 SRCS_FILES =	main.c \
 				parse.c \
 				solve.c \
-				utils.c
+				print.c
 
 SRC = $(addprefix $(SRC_DIR)/, $(SRCS_FILES))
 

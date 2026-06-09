@@ -1,9 +1,7 @@
-#ifndef BSQ_H
-# define BSQ_H
+# pragma once
 
-# include <stdlib.h>
-# include <unistd.h>
-# include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 typedef struct s_map {
     int     rows;
@@ -11,18 +9,13 @@ typedef struct s_map {
     char    empty;
     char    obs;
     char    full;
-    char    *data;
+    char    **grid;
+    int     max_size;
+    int     max_i;
+    int     max_j;
 } t_map;
 
-/* utils.c */
-void    ft_putstr_fd(char *s, int fd);
-int     ft_min(int a, int b, int c);
-
-/* parse.c */
-char    *read_file(int fd);
-int     parse_map(char *raw, t_map *map);
-
-/* solve.c */
-void    solve_and_print(t_map *map);
-
-#endif
+int     parse_map(FILE *stream, t_map *map);
+void    solve_map(t_map *map);
+void    print_map(t_map *map);
+void    free_map(t_map *map);
