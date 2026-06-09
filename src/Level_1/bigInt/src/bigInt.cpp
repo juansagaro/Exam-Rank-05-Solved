@@ -27,6 +27,7 @@ std::ostream& operator<<(std::ostream& os, const bigint& obj) {
 }
 
 bigint& bigint::operator+=(const bigint& other) {
+    // Grade-school addition from right to left.
     std::string res = "";
     int carry = 0;
     int i = this->str.length() - 1;
@@ -113,6 +114,7 @@ bool bigint::operator>=(const bigint& other) const {
 bigint& bigint::operator<<=(unsigned int n) {
     if (this->str == "0") return *this;
 
+    // Base-10 digit shift left: append n zeros.
     for (unsigned int i = 0; i < n; ++i) {
         this->str += '0';
     }
@@ -126,6 +128,7 @@ bigint bigint::operator<<(unsigned int n) const {
 }
 
 bigint& bigint::operator>>=(unsigned int n) {
+    // Base-10 digit shift right: remove n trailing digits.
     if (n >= this->str.length()) {
         this->str = "0";
     } else {

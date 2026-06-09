@@ -17,10 +17,12 @@ vect2& vect2::operator=(const vect2& source) {
 }
 
 int vect2::operator[](int index) const {
+    // Subject guarantees only index 0 or 1.
     return (index == 0) ? x : y;
 }
 
 int& vect2::operator[](int index) {
+    // Non-const overload returns a writable component reference.
     return (index == 0) ? x : y;
 }
 
@@ -35,6 +37,7 @@ vect2& vect2::operator*=(int num) {
 }
 
 vect2 vect2::operator*(int num) const {
+    // Reuse compound operator to keep behavior centralized.
     vect2 tmp(*this);
     tmp *= num;
     return tmp;

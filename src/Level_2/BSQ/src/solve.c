@@ -9,6 +9,7 @@ void solve_map(t_map *map)
     map->max_i = 0;
     map->max_j = 0;
 
+    // 1D DP: dp[j] is the best square ending at current row, column j.
     if (!(dp = calloc(map->cols, sizeof(int)))) return;
 
     for (i = 0; i < map->rows; i++) {

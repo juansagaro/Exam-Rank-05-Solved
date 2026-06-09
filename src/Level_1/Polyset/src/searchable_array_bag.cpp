@@ -15,6 +15,7 @@ searchable_array_bag &searchable_array_bag::operator=(const searchable_array_bag
 searchable_array_bag::~searchable_array_bag() {}
 
 bool searchable_array_bag::has(int item) const {
+    // Linear search over the active range in the inherited array storage.
     for (int i = 0; i < size; i++) {
         if (data[i] == item) {
             return true;

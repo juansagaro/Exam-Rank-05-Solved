@@ -18,6 +18,7 @@ set &set::operator=(const set &other) {
 set::~set() {}
 
 void set::insert(int item) {
+    // A set keeps one occurrence per value.
     if (m_bag && !m_bag->has(item)) {
         m_bag->insert(item);
     }

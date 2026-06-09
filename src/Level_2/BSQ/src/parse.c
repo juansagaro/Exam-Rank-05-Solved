@@ -2,6 +2,7 @@
 
 void free_map(t_map *map)
 {
+    // Rows are allocated independently, then the row pointer array.
     if (!map->grid) return;
     for (int i = 0; i < map->rows; i++)
         free(map->grid[i]);
@@ -21,6 +22,7 @@ int parse_map(FILE *stream, t_map *map)
     if (map->rows <= 0 || map->empty == map->obs || map->empty == map->full || map->obs == map->full)
         return (0);
 
+    // One pointer per row, each row filled by getline.
     if (!(map->grid = calloc(map->rows, sizeof(char *)))) return (0);
 
     while (i < map->rows)

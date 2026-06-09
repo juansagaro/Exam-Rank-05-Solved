@@ -4,6 +4,7 @@ void process_stream(FILE *stream)
 {
     t_map map;
 
+    // Ensure free_map is always safe, even on parse failure.
     map.grid = NULL; 
     if (!parse_map(stream, &map))
         fputs("map error\n", stderr);

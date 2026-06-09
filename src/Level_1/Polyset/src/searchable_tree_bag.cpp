@@ -15,6 +15,7 @@ searchable_tree_bag &searchable_tree_bag::operator=(const searchable_tree_bag &o
 searchable_tree_bag::~searchable_tree_bag() {}
 
 bool searchable_tree_bag::has(int item) const {
+    // Standard BST lookup.
     node *current = tree;
 
     while (current) {
